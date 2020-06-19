@@ -9,6 +9,7 @@ import java.lang.reflect.Field
 class CarApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+
         launchPatch()
     }
 
