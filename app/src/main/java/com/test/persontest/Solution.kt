@@ -27,7 +27,7 @@ import kotlin.system.measureTimeMillis
  * @Author: huangda
  * @Date: 2019/11/11 14:14
  */
-class Solution {
+class Solution : CoroutineScope by MainScope() {
     var count = 0
 
     fun lengthOfLongestSubstring(s: String): Int {
@@ -100,9 +100,7 @@ class Solution {
     }
 
     fun check2() {
-        Thread {
-            val handler = Handler()
-        }.start()
+
     }
 
 
