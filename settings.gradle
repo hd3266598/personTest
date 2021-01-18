@@ -1,10 +1,3 @@
 include ':Gio'
-setBinding(new Binding([gradle: this]))
-evaluate(new File(
-  settingsDir,
-  'flutter_module/.android/include_flutter.groovy'
-))
 include ':app'
 rootProject.name='personTest'
-
-include ':flutter_module'

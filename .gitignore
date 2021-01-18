@@ -15,3 +15,6 @@
 
 # Project exclude paths
 /buildSrc/build/
+libs/
+src/main/res/anim/
+/.idea/
