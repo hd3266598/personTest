@@ -7,6 +7,12 @@
     tools:context=".activity.MainActivity">
 
     <Button
+        android:id="@+id/btn_web_router"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="H5路由" />
+
+    <Button
         android:id="@+id/btn_router"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

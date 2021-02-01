@@ -17,11 +17,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".activity.appbrand.ui.WebViewActivity"
+            android:label="WebViewActivity"
+            android:documentLaunchMode="always"
+            android:launchMode="singleTask" />
+
         <activity
             android:name=".activity.appbrand.ui.AppBrandUI5"
             android:label="AppBrandUI5"
-            android:launchMode="singleTask"
-            android:taskAffinity="com.test.persontest.appBrandUI5" />
+            android:documentLaunchMode="always"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.appbrand.ui.AppBrandUI4"
             android:label="AppBrandUI4"

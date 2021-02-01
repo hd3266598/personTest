@@ -14,6 +14,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        btn_web_router.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java)
+            startActivity(intent)
+        }
         btn_router.setOnClickListener {
             val intent = Intent(this, AppBrandUI::class.java)
             startActivity(intent)
