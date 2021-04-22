@@ -20,14 +20,14 @@
 
         <activity
             android:name=".activity.appbrand.ui.WebViewActivity"
+            android:documentLaunchMode="intoExisting"
             android:label="WebViewActivity"
-            android:documentLaunchMode="always"
             android:launchMode="singleTask" />
 
         <activity
             android:name=".activity.appbrand.ui.AppBrandUI5"
-            android:label="AppBrandUI5"
             android:documentLaunchMode="always"
+            android:label="AppBrandUI5"
             android:launchMode="singleTask" />
         <activity
             android:name=".activity.appbrand.ui.AppBrandUI4"
@@ -66,6 +66,25 @@
             android:name=".LaunchProvider"
             android:authorities="${applicationId}.launchprovider"
             android:exported="false" />
+
+        <service
+            android:name=".activity.appbrand.service.FirstService"
+            android:enabled="true"
+            android:exported="true"
+            android:process="com.test.first" />
+
+        <service
+            android:name=".activity.appbrand.service.SecondService"
+            android:enabled="true"
+            android:exported="true"
+            android:process="com.test.second" />
+
+        <service
+            android:name=".activity.appbrand.service.ThirdService"
+            android:process="com.test.third"
+            android:enabled="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>

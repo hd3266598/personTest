@@ -1,5 +1,6 @@
 package com.test.persontest.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -42,5 +43,22 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AppBrandUI5::class.java)
             startActivity(intent)
         }
+
+        search(::find)
+    }
+
+
+    fun Context.search(l: (String) -> (Boolean) -> Unit) {
+        l("ee")
+    }
+
+
+    fun find(s: String): (Boolean) -> Unit {
+        return ::realFind
+    }
+
+
+    fun realFind(b: Boolean) {
+
     }
 }

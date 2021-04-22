@@ -1017,16 +1017,42 @@ class Solution : CoroutineScope by MainScope() {
         return memo[amount - 1]
     }
 
-    fun quickSort(array: IntArray?, begin: Int, end: Int) {
+
+    fun quickSort(array: IntArray, begin: Int, end: Int) {
         if (end <= begin) return
-//        val pivot: Int = partition(array, begin, end)
-//        quickSort(array, begin, pivot - 1)
-//        quickSort(array, pivot + 1, end)
+        val index = partition(array, begin, end)
+        quickSort(array, begin, index - 1)
+        quickSort(array, index + 1, end)
     }
 
-//    private fun partition(array: IntArray?, begin: Int, end: Int): Int {
-//
-//    }
+    private fun partition(array: IntArray, begin: Int, end: Int): Int {
+        val temp = array[begin]
+        var low = begin
+        var high = end
+        while (low < high) {
+            while (low < high && array[high] >= temp) {
+                high--
+            }
+            array[low] = array[high]
+            while (low < high && array[low] <= temp) {
+                low++
+            }
+            array[high] = array[low]
+        }
+        array[low] = temp
+        return low
+    }
+
+
+    fun quickSort(array: IntArray) {
+        for (i in array.indices) {
+            for (j in 0..array.lastIndex - i) {
+                if (array[j] > array[j + 1]) {
+                    array[j] = array[j + 1].also { array[j + 1] = array[j] }
+                }
+            }
+        }
+    }
 
 
     class ListNode(var `val`: Int) {
