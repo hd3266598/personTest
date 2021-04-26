@@ -61,4 +61,8 @@ class MainActivity : AppCompatActivity() {
     fun realFind(b: Boolean) {
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }

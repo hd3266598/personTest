@@ -19,12 +19,9 @@ class WebViewActivity : AppCompatActivity() {
         button_exit.setOnClickListener {
             onBackPressed()
         }
+    }
 
-        GlobalScope.launch {
-            while (true){
-                Log.i("GlobalScope", "onCreate: run")
-                delay(1000)
-            }
-        }
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

@@ -15,7 +15,7 @@ repositories {
 }
 
 group='com.hd.plugin'
-version='1.0.5'
+version='1.1.5'
 
 uploadArchives {
     repositories {

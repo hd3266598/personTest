@@ -1,39 +1,47 @@
 package com.hd.plugin.lifecycle;
 
-import groovyjarjarasm.asm.ClassVisitor;
-import groovyjarjarasm.asm.MethodVisitor;
-import groovyjarjarasm.asm.Opcodes;
+
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 public class LifecycleClassVisitor extends ClassVisitor implements Opcodes {
+
     private String mClassName;
 
-    public LifecycleClassVisitor(ClassVisitor classVisitor) {
-        super(Opcodes.ASM5, classVisitor);
+    public LifecycleClassVisitor(ClassVisitor cv) {
+        super(Opcodes.ASM5, cv);
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        System.out.println("LifecycleClassVisitor : visit -----> started :" + name);
-        mClassName = name;
+        //System.out.println("LifecycleClassVisitor : visit -----> started ：" + name);
+        this.mClassName = name;
         super.visit(version, access, name, signature, superName, interfaces);
     }
 
     @Override
-    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         System.out.println("LifecycleClassVisitor : visitMethod : " + name);
-        MethodVisitor methodVisitor = cv.visitMethod(access, name, descriptor, signature, exceptions);
-        if (mClassName.equals("androidx/fragment/app/FragmentActivity")) {
-            if (name.equals("onCreate")) {
+        MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
+        //匹配FragmentActivity
+        if ("androidx/fragment/app/FragmentActivity".equals(this.mClassName)) {
+            if ("onCreate".equals(name) ) {
+                //处理onCreate
                 System.out.println("LifecycleClassVisitor : change method ----> " + name);
-                return new LifecycleOnCreateMethodVisitor(methodVisitor);
+                return new LifecycleOnCreateMethodVisitor(mv);
+            } else if ("onDestroy".equals(name)) {
+                //处理onDestroy
+                System.out.println("LifecycleClassVisitor : change method ----> " + name);
+                return new LifecycleOnDestroyMethodVisitor(mv);
             }
         }
-        return methodVisitor;
+        return mv;
     }
 
     @Override
     public void visitEnd() {
-        System.out.println("Gio : visit -----> end");
+        //System.out.println("LifecycleClassVisitor : visit -----> end");
         super.visitEnd();
     }
 }

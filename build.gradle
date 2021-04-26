@@ -16,7 +16,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.hd.plugin:Gio:1.0.5"
+        classpath "com.hd.plugin:Gio:1.1.5"
         // NOTE: Do not place your application dependencies here; they belongz
         // in the individual module build.gradle files
     }
