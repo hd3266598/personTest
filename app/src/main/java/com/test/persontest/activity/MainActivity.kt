@@ -3,6 +3,10 @@ package com.test.persontest.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.MessageQueue
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.test.persontest.R
 import com.test.persontest.activity.appbrand.ui.*
@@ -14,6 +18,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.i("TAG", "onCreate: ${this.javaClass.simpleName}")
 
         btn_web_router.setOnClickListener {
             val intent = Intent(this, WebViewActivity::class.java)

@@ -2,6 +2,13 @@
 
 buildscript {
     ext.kotlin_version = '1.4.21'
+
+    ext{
+        PUBLISH_GROUP_ID   = "com.hd.plugin"
+        PUBLISH_ARTIFACT_ID = 'gio'
+        PUBLISH_VERSION = "0.0.1"
+    }
+
     repositories {
         google()
 //        jcenter()
