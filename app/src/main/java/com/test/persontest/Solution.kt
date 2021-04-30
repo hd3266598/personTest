@@ -1019,16 +1019,38 @@ class Solution : CoroutineScope by MainScope() {
 
 
     fun quickSort(array: IntArray, begin: Int, end: Int) {
+//        if (end <= begin) return
+//        val index = partition(array, begin, end)
+//        quickSort(array, begin, index - 1)
+//        quickSort(array, index + 1, end)
+
         if (end <= begin) return
-        val index = partition(array, begin, end)
-        quickSort(array, begin, index - 1)
-        quickSort(array, index + 1, end)
+        val index = partition(array, 0, array.lastIndex)
+        quickSort(array, 0, index - 1)
+        quickSort(array, index + 1, array.lastIndex)
     }
 
     private fun partition(array: IntArray, begin: Int, end: Int): Int {
+//        val temp = array[begin]
+//        var low = begin
+//        var high = end
+//        while (low < high) {
+//            while (low < high && array[high] >= temp) {
+//                high--
+//            }
+//            array[low] = array[high]
+//            while (low < high && array[low] <= temp) {
+//                low++
+//            }
+//            array[high] = array[low]
+//        }
+//        array[low] = temp
+//        return low
+
         val temp = array[begin]
         var low = begin
         var high = end
+
         while (low < high) {
             while (low < high && array[high] >= temp) {
                 high--
@@ -1045,8 +1067,8 @@ class Solution : CoroutineScope by MainScope() {
 
 
     fun quickSort(array: IntArray) {
-        for (i in array.indices) {
-            for (j in 0..array.lastIndex - i) {
+        for (i in 0 until array.lastIndex) {
+            for (j in 0 until array.lastIndex - i) {
                 if (array[j] > array[j + 1]) {
                     array[j] = array[j + 1].also { array[j + 1] = array[j] }
                 }
