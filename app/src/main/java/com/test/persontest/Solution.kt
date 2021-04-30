@@ -1025,9 +1025,9 @@ class Solution : CoroutineScope by MainScope() {
 //        quickSort(array, index + 1, end)
 
         if (end <= begin) return
-        val index = partition(array, 0, array.lastIndex)
-        quickSort(array, 0, index - 1)
-        quickSort(array, index + 1, array.lastIndex)
+        val index = partition(array, begin, end)
+        quickSort(array, begin, index - 1)
+        quickSort(array, index + 1, end)
     }
 
     private fun partition(array: IntArray, begin: Int, end: Int): Int {
