@@ -1046,19 +1046,13 @@ class Solution : CoroutineScope by MainScope() {
 //        }
 //        array[low] = temp
 //        return low
-
         val temp = array[begin]
         var low = begin
         var high = end
-
         while (low < high) {
-            while (low < high && array[high] >= temp) {
-                high--
-            }
+            while (low < high && array[high] >= temp) high--
             array[low] = array[high]
-            while (low < high && array[low] <= temp) {
-                low++
-            }
+            while (low < high && array[low] <= temp) low++
             array[high] = array[low]
         }
         array[low] = temp
@@ -1069,9 +1063,7 @@ class Solution : CoroutineScope by MainScope() {
     fun quickSort(array: IntArray) {
         for (i in 0 until array.lastIndex) {
             for (j in 0 until array.lastIndex - i) {
-                if (array[j] > array[j + 1]) {
-                    array[j] = array[j + 1].also { array[j + 1] = array[j] }
-                }
+                if (array[j] > array[j + 1]) array[j] = array[j + 1].also { array[j + 1] = array[j] }
             }
         }
     }

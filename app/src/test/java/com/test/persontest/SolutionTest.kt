@@ -1,5 +1,8 @@
 package com.test.persontest
 
+import com.test.persontest.person.LiuDeHua
+import com.test.persontest.person.StarProxy
+import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
 
@@ -64,8 +67,25 @@ class SolutionTest : TestCase() {
 
     @Test
     fun testQuickSort() {
-        val intArrayOf = intArrayOf(9, 8, 6, 2, 5, 4, 8, 3, 7,2,3,4,6,1,3,8,45,93,435,26,7,2)
-        solution?.quickSort(intArrayOf, 0, intArrayOf.lastIndex)
-        println(intArrayOf.joinToString(","))
+        val list = arrayListOf<Int>()
+        val intArrayOf = arrayListOf(9, 8, 6, 2, 5, 4, 8, 3, 7, 2, 3, 4, 6, 1, 3, 8, 45, 93, 435, 26)
+        for (i in 0..100){
+            list.addAll(intArrayOf)
+        }
+        val toArray = list.toIntArray()
+        val current = System.currentTimeMillis()
+        solution?.quickSort(toArray,0,toArray.lastIndex)
+        println(System.currentTimeMillis() - current)
+        println(toArray.joinToString(","))
+    }
+
+    @Test
+    fun testProxy() {
+        val liuDeHua = LiuDeHua()
+        val starProxy = StarProxy()
+        starProxy.setTarget(liuDeHua)
+        val creatProxyedObj = starProxy.CreatProxyedObj()
+        (creatProxyedObj as star).dance("一支舞")
+        (creatProxyedObj as star).sing("一首歌舞")
     }
 }
