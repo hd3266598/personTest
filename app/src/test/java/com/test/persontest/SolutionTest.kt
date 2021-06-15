@@ -35,7 +35,16 @@ class SolutionTest : TestCase() {
 
     @Test
     fun testIsNull() {
-        println(solution?.isPalindrome("A man, a plan, a canal: Panama"))
+//        println(Double.MAX_VALUE)
+//        SolutionJava.cc()
+
+//        var type = LineDirectionType.DEFAULT_DIRECTION
+//        val type1 = type
+//        type = LineDirectionType.LEFT_DIRECTION
+
+        println(0xff)
+        println(0x22)
+        println(0x324)
     }
 
     @Test
@@ -69,12 +78,12 @@ class SolutionTest : TestCase() {
     fun testQuickSort() {
         val list = arrayListOf<Int>()
         val intArrayOf = arrayListOf(9, 8, 6, 2, 5, 4, 8, 3, 7, 2, 3, 4, 6, 1, 3, 8, 45, 93, 435, 26)
-        for (i in 0..100){
+        for (i in 0..100) {
             list.addAll(intArrayOf)
         }
         val toArray = list.toIntArray()
         val current = System.currentTimeMillis()
-        solution?.quickSort(toArray,0,toArray.lastIndex)
+        solution?.quickSort(toArray, 0, toArray.lastIndex)
         println(System.currentTimeMillis() - current)
         println(toArray.joinToString(","))
     }

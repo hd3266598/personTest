@@ -2,8 +2,12 @@ package com.test.persontest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 class SolutionJava {
+
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> res = new ArrayList<Integer>();
         inorder(root, res);
@@ -11,7 +15,6 @@ class SolutionJava {
     }
 
     public void inorder(TreeNode root, List<Integer> res) {
-
         if (root == null) {
             return;
         }
@@ -28,5 +31,17 @@ class SolutionJava {
         } else {
             return callatz((n * 3 + 1) / 2, ++step);
         }
+    }
+
+    private static int a;
+
+    public static void cc(){
+        modify(a);
+//        a++;
+        System.out.println(a);
+    }
+
+    public static void modify(int a){
+        a++;
     }
 }

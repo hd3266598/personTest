@@ -43,6 +43,8 @@ class Solution : CoroutineScope by MainScope() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun firstUniqChar(s: String): Int {
+        val arrayListOf = arrayListOf<Int>()
+        arrayListOf.toList()
         val localHashMap = hashMapOf<Char, Int?>()
         s.forEachIndexed { index, c ->
             localHashMap[c] = localHashMap.getOrDefault(c, 0)?.plus(1)
@@ -477,9 +479,7 @@ class Solution : CoroutineScope by MainScope() {
     }
 
     fun inOrder(treeNode: TreeNode?, list: ArrayList<Int>) {
-        if (treeNode == null) {
-            return
-        }
+        if (treeNode == null) return
         list.add(treeNode.`val`)
         inOrder(treeNode.left, list)
         inOrder(treeNode.right, list)
