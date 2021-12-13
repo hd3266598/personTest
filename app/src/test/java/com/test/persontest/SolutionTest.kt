@@ -5,6 +5,8 @@ import com.test.persontest.person.StarProxy
 import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
+import kotlin.math.max
+import kotlin.math.min
 
 class SolutionTest : TestCase() {
     private var solution: Solution? = null
@@ -96,5 +98,35 @@ class SolutionTest : TestCase() {
         val creatProxyedObj = starProxy.CreatProxyedObj()
         (creatProxyedObj as star).dance("一支舞")
         (creatProxyedObj as star).sing("一首歌舞")
+    }
+
+
+    //The grid is:
+    //[ [3, 0, 8, 4],
+    //  [2, 4, 5, 7],
+    //  [9, 2, 6, 3],
+    //  [0, 3, 1, 0] ]
+    fun maxIncreaseKeepingSkyline(grid: Array<IntArray>): Int {
+        val size = grid.size
+        val row = IntArray(size)
+        val clown = IntArray(size)
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                row[i] = max(row[i], grid[i][j])
+                clown[i] = max(clown[i], grid[j][i])
+            }
+        }
+        var sum = 0
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                sum += (min(row[i], clown[j]) - grid[i][j])
+            }
+        }
+        return sum
+    }
+
+    @Test
+    fun testMain() {
+        maxIncreaseKeepingSkyline(arrayOf(intArrayOf(3, 0, 8, 4), intArrayOf(2, 4, 5, 7), intArrayOf(9, 2, 6, 3), intArrayOf(0, 3, 1, 0)))
     }
 }
