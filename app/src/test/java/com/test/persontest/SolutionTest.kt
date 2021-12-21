@@ -125,8 +125,60 @@ class SolutionTest : TestCase() {
         return sum
     }
 
+    fun findRadius(houses: IntArray, heaters: IntArray): Int {
+        houses.sort()
+        heaters.sort()
+        if (houses.last() < heaters.last()) {
+            return heaters.last() - houses.first()
+        }
+        val temp = IntArray(houses.last())
+        for (i in temp.indices) {
+            temp[i] = i + 1
+        }
+        var sum = 0
+        var count = 0
+        val array = IntArray(temp.size)
+        for (i in array.indices) {
+            array[i] = i + 1
+        }
+        for (i in temp.indices) {
+            array[i] = if (heaters.contains(temp[i])) 1 else 0
+        }
+        for (i in array.indices) {
+            if (array[i] == 1) {
+                sum = if (count and 1 == 0) {
+                    count / 2
+                } else {
+                    count + 1 / 2
+                }
+                count = 0
+            } else {
+                count++
+                sum = max(sum, count)
+            }
+        }
+        println(sum)
+        return sum
+    }
+
+    fun dayOfYear(date: String): Int {
+        val year = date.substring(0, 4).toInt()
+        val month = date.substring(5, 7).toInt()
+        val day = date.substring(8, 10).toInt()
+        val months = intArrayOf(31, 28, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30)
+        if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) {
+            ++months[1]
+        }
+        var sum = 0
+        for (i in 0 until month - 1) {
+            sum += months[i]
+        }
+        println(sum + day)
+        return sum + day
+    }
+
     @Test
     fun testMain() {
-        maxIncreaseKeepingSkyline(arrayOf(intArrayOf(3, 0, 8, 4), intArrayOf(2, 4, 5, 7), intArrayOf(9, 2, 6, 3), intArrayOf(0, 3, 1, 0)))
+        dayOfYear("2019-02-10")
     }
 }
