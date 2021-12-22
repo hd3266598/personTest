@@ -5,6 +5,7 @@ import com.test.persontest.person.StarProxy
 import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
+import java.lang.StringBuilder
 import kotlin.math.max
 import kotlin.math.min
 
@@ -177,8 +178,29 @@ class SolutionTest : TestCase() {
         return sum + day
     }
 
+    fun repeatedStringMatch(a: String, b: String): Int {
+        val array = b.toCharArray()
+        array.forEach {
+            if (!a.contains(it)) {
+                return -1
+            }
+        }
+        val stringBuilder = StringBuilder(a)
+        var count = 1
+        val length = (b.length / a.length) + 2
+        for (i in 1..length) {
+            if (stringBuilder.contains(b)) {
+                return count
+            } else {
+                count++
+                stringBuilder.append(a)
+            }
+        }
+        return -1
+    }
+
     @Test
     fun testMain() {
-        dayOfYear("2019-02-10")
+        repeatedStringMatch("abc", "cabcabca")
     }
 }
