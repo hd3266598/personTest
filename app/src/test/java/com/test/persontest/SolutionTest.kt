@@ -5,9 +5,9 @@ import com.test.persontest.person.StarProxy
 import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
-import java.lang.StringBuilder
 import kotlin.math.max
 import kotlin.math.min
+
 
 class SolutionTest : TestCase() {
     private var solution: Solution? = null
@@ -199,8 +199,79 @@ class SolutionTest : TestCase() {
         return -1
     }
 
+    fun simplifiedFractions(n: Int): List<String> {
+        val ans: MutableList<String> = ArrayList()
+        for (a in 2..n) {
+            for (b in 1 until a) {
+                if (gcd(a, b) == 1) {
+                    ans.add("$b/$a")
+                }
+            }
+        }
+        return ans
+    }
+
+    fun gcd(a: Int, b: Int): Int {
+        return if (b == 0) a else gcd(b, a % b)
+    }
+
+    fun minimumDifference(nums: IntArray, k: Int): Int {
+        nums.sort()
+        var d = Int.MAX_VALUE
+        for (i in 0..nums.size - k) {
+            d = d.coerceAtMost(Math.abs(nums[i + k - 1] - nums[i]))
+        }
+        return d
+    }
+
+    fun singleNonDuplicate(nums: IntArray): Int {
+        var l = 0
+        var r = nums.lastIndex
+        while (l < r) {
+            val mid = (l + r) / 2
+            if (nums[mid] == nums[mid xor 1]) {
+                l = mid + 1
+            } else {
+                r = mid
+            }
+        }
+        return nums[l]
+    }
+
+    fun addDigits(num: Int): Int {
+        return (num - 1) % 9 + 1
+    }
+
+    fun subArrayRanges(nums: IntArray): Long {
+        val n = nums.lastIndex
+        var sum = 0L
+        for (i in 0..n) {
+            var min = Int.MAX_VALUE
+            var max = Int.MIN_VALUE
+            for (j in i..n) {
+                max = Math.max(max, nums[j])
+                min = Math.min(min, nums[j])
+                sum += max - min
+            }
+        }
+        return sum
+    }
+
+    fun convertToBase7(num: Int): String {
+        val flag = num < 0
+        var n = if (flag) -num else num
+        val string = StringBuilder()
+        do {
+            string.append(n % 7)
+            n /= 7
+        } while (n != 0)
+        string.reverse()
+        return "${if (flag) "-" else ""}$string"
+    }
+
+
     @Test
     fun testMain() {
-        repeatedStringMatch("abc", "cabcabca")
+        println(subArrayRanges(intArrayOf(4, -2, -3, 4, 1)))
     }
 }
