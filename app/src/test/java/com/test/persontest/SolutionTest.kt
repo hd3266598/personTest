@@ -1,5 +1,7 @@
 package com.test.persontest
 
+import android.util.SparseArray
+import androidx.core.util.containsValue
 import com.test.persontest.person.LiuDeHua
 import com.test.persontest.person.StarProxy
 import com.test.persontest.person.star
@@ -269,9 +271,34 @@ class SolutionTest : TestCase() {
         return "${if (flag) "-" else ""}$string"
     }
 
+    fun findRestaurant(list1: Array<String>, list2: Array<String>): Array<String> {
+        val sparseArray = SparseArray<String>()
+        list1.forEachIndexed { index, s ->
+            sparseArray.put(index, s)
+        }
+        var max = Int.MAX_VALUE
+        val array = arrayListOf<String>()
+        list2.forEachIndexed { index, s ->
+            if (sparseArray.containsValue(s)) {
+                val i = sparseArray.keyAt(sparseArray.indexOfValue(s)) + index
+                if (i < max) {
+                    max = i
+                    array.clear()
+                    array.add(s)
+                } else if (i == max) {
+                    array.add(s)
+                }
+            }
+        }
+        array.sort()
+        return array.toArray(Array(array.size) {
+            return@Array ""
+        })
+    }
+
 
     @Test
     fun testMain() {
-        println(subArrayRanges(intArrayOf(4, -2, -3, 4, 1)))
+        solutionJava?.cc()
     }
 }

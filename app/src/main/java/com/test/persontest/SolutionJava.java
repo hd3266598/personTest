@@ -33,15 +33,16 @@ class SolutionJava {
         }
     }
 
-    private static int a;
+    private String a = "1";
 
-    public static void cc(){
+    public void cc() {
         modify(a);
 //        a++;
         System.out.println(a);
     }
 
-    public static void modify(int a){
-        a++;
+    public void modify(String a) {
+        a = "2";
+        System.out.println(a);
     }
 }
