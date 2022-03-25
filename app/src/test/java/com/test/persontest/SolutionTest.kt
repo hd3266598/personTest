@@ -82,7 +82,8 @@ class SolutionTest : TestCase() {
     @Test
     fun testQuickSort() {
         val list = arrayListOf<Int>()
-        val intArrayOf = arrayListOf(9, 8, 6, 2, 5, 4, 8, 3, 7, 2, 3, 4, 6, 1, 3, 8, 45, 93, 435, 26)
+        val intArrayOf =
+            arrayListOf(9, 8, 6, 2, 5, 4, 8, 3, 7, 2, 3, 4, 6, 1, 3, 8, 45, 93, 435, 26)
         for (i in 0..100) {
             list.addAll(intArrayOf)
         }
@@ -294,6 +295,16 @@ class SolutionTest : TestCase() {
         return array.toArray(Array(array.size) {
             return@Array ""
         })
+    }
+
+    fun trailingZeroes(n: Int): Int {
+        var count = 0
+        var nn = n
+        while (nn > 0) {
+            nn /= 5
+            count += nn
+        }
+        return count
     }
 
 

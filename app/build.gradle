@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: com.hd.plugin.Gio
+//apply plugin: com.hd.plugin.Gio
 
 android {
     compileSdkVersion 29
