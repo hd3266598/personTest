@@ -307,6 +307,53 @@ class SolutionTest : TestCase() {
         return count
     }
 
+    fun countNumbersWithUniqueDigits(n: Int): Int {
+        if (n == 0) return 1
+        if (n == 1) return 10
+        var res = 10
+        var cur = 9
+        for (i in 0 until n - 1) {
+            cur *= 9 - i
+            res += cur
+        }
+        return res
+    }
+
+    fun shortestToChar(s: String, c: Char): IntArray {
+        val n = s.length
+        val intArray = IntArray(n)
+        var cx = -n
+        for (i in 0 until n) {
+            if (s[i] == c) {
+                cx = i
+            }
+            intArray[i] = i - cx
+        }
+        var cx2 = 2 * n
+        for (i in n - 1 downTo 0) {
+            if (s[i] == c) {
+                cx2 = i
+            }
+            intArray[i] = Math.min(intArray[i], cx2 - i)
+        }
+        return intArray
+    }
+
+    fun maxRotateFunction(nums: IntArray): Int {
+        var result = 0
+        val sums = nums.sum()
+        for (i in nums.indices) {
+            result += i * nums[i]
+        }
+        var answer = result
+        val size = nums.size
+        for (i in 1 until size) {
+            result += sums - size * nums[size - i]
+            answer = Math.max(answer, result)
+        }
+        return answer
+    }
+
 
     @Test
     fun testMain() {
