@@ -354,6 +354,30 @@ class SolutionTest : TestCase() {
         return answer
     }
 
+    fun findDuplicates(nums: IntArray): List<Int> {
+        val result = arrayListOf<Int>()
+        nums.forEach {
+            val key = Math.abs(it)
+            if (nums[key - 1] > 0) {
+                nums[key - 1] = -nums[key - 1]
+            } else {
+                result.add(key)
+            }
+        }
+        return result
+    }
+
+    fun diStringMatch(s: String): IntArray {
+        val result = IntArray(s.length + 1)
+        var lo = 0
+        var hi = s.length
+        s.forEachIndexed { index, c ->
+            result[index] = if (c == 'I') lo++ else hi--
+        }
+        result[s.length] = lo
+        return result
+    }
+
 
     @Test
     fun testMain() {
