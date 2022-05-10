@@ -378,6 +378,29 @@ class SolutionTest : TestCase() {
         return result
     }
 
+    fun romanToInt(s: String): Int {
+        val map = hashMapOf<Char, Int>()
+        map['I'] = 1
+        map['V'] = 5
+        map['X'] = 10
+        map['L'] = 50
+        map['C'] = 100
+        map['D'] = 500
+        map['M'] = 1000
+
+        var result = 0
+        s.forEachIndexed { index, c ->
+            val i = map[c]!!
+            if (index < s.length - 1 && i < map[s[index + 1]]!!) {
+                result -= i
+            } else {
+                result += i
+            }
+        }
+
+        return result
+    }
+
 
     @Test
     fun testMain() {
