@@ -10,14 +10,12 @@
 package com.test.persontest
 
 import android.os.Build
-import android.text.style.CharacterStyle
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.math.BigInteger
 import java.util.*
-import java.util.concurrent.Executors
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.math.max
@@ -486,7 +484,6 @@ class Solution : CoroutineScope by MainScope() {
     }
 
     fun postorder(root: Node?): List<Int> {
-        Executors.newCachedThreadPool()
         val stack = Stack<Node?>()
         val outPut = LinkedList<Int>()
         stack.push(root)

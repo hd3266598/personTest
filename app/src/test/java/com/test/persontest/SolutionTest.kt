@@ -7,6 +7,7 @@ import com.test.persontest.person.StarProxy
 import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
+import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -54,7 +55,7 @@ class SolutionTest : TestCase() {
 
     @Test
     fun testCheck() {
-        codec.buildTree(intArrayOf(3, 9, 20, 15, 7), intArrayOf(9, 3, 15, 20, 7))
+//        codec.buildTree(intArrayOf(3, 9, 20, 15, 7), intArrayOf(9, 3, 15, 20, 7))
     }
 
     @Test
@@ -399,6 +400,47 @@ class SolutionTest : TestCase() {
         }
 
         return result
+    }
+
+    class Codec() {
+        // Encodes a URL to a shortened URL.
+        fun serialize(root: TreeNode?): String {
+            val list = arrayListOf<Int>()
+            postOrder(root, list)
+            val s = list.toString()
+            return s.substring(1, s.length - 1)
+        }
+
+        // Decodes your encoded data to tree.
+        fun deserialize(data: String): TreeNode? {
+            if (data.isEmpty()) {
+                return null
+            }
+            val stack = Stack<Int>()
+            data.split(", ").forEach {
+                stack.push(it.toInt())
+            }
+            return construct(Int.MIN_VALUE, Int.MAX_VALUE, stack)
+        }
+
+        private fun postOrder(treeNode: TreeNode?, list: ArrayList<Int>) {
+            if (treeNode == null) return
+            postOrder(treeNode.left, list)
+            postOrder(treeNode.right, list)
+            list.add(treeNode.`val`)
+        }
+
+        private fun construct(low: Int, high: Int, stack: Stack<Int>): TreeNode? {
+            if (stack.isEmpty() || stack.peek() < low || stack.peek() > high) {
+                return null
+            }
+            val value = stack.pop()
+            val treeNode = TreeNode(value)
+            treeNode.right = construct(value, high, stack)
+            treeNode.left = construct(low, value, stack)
+            return treeNode
+        }
+
     }
 
 
