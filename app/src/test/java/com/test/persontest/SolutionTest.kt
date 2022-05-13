@@ -102,7 +102,7 @@ class SolutionTest : TestCase() {
         starProxy.setTarget(liuDeHua)
         val creatProxyedObj = starProxy.CreatProxyedObj()
         (creatProxyedObj as star).dance("一支舞")
-        (creatProxyedObj as star).sing("一首歌舞")
+        creatProxyedObj.sing("一首歌舞")
     }
 
 
@@ -443,9 +443,59 @@ class SolutionTest : TestCase() {
 
     }
 
+    fun minDeletionSize(strs: Array<String>): Int {
+        var result = 0
+        val n = strs.first().length
+        for (i in 0 until n) {
+            for (j in 1 until strs.size) {
+                if (strs[j][i] < strs[j - 1][i]) {
+                    result++
+                    break
+                }
+            }
+        }
+        return result
+    }
+
+    fun oneEditAway(first: String, second: String): Boolean {
+        val m = first.length
+        val n = second.length
+        return when {
+            m - n == 1 -> compare(second, first)
+            n - m == 1 -> compare(first, second)
+            m == n -> {
+                var equals = false
+                first.forEachIndexed { index, c ->
+                    if (c != second[index]) {
+                        if (equals) {
+                            return false
+                        } else {
+                            equals = true
+                        }
+                    }
+                }
+                true
+            }
+            else -> false
+        }
+    }
+
+    private fun compare(short: String, long: String): Boolean {
+        var i = 0
+        var j = 0
+        while (i < short.length && j < long.length) {
+            if (short[i] == long[j]) {
+                i++
+            }
+            j++
+            if (j - i > 1) return false
+        }
+        return true
+    }
+
 
     @Test
     fun testMain() {
-        solutionJava?.cc()
+        minDeletionSize(arrayOf("zyx", "wvu", "tsr"))
     }
 }
