@@ -1,4 +1,4 @@
-package com.test.persontest.model
+package com.test.persontest.model.video
 
 data class SegmentBaseX(
     val index_range: String,

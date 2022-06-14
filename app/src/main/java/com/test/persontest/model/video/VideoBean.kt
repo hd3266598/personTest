@@ -1,4 +1,4 @@
-package com.test.persontest.model
+package com.test.persontest.model.video
 
 data class VideoBean(
     val code: Int,

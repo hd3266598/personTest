@@ -1,4 +1,4 @@
-package com.test.persontest.model
+package com.test.persontest.model.video
 
 data class Data(
     val accept_description: List<String>,
