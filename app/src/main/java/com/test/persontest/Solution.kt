@@ -10,7 +10,6 @@
 package com.test.persontest
 
 import android.os.Build
-import android.text.style.CharacterStyle
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -1017,46 +1016,84 @@ class Solution : CoroutineScope by MainScope() {
         return memo[amount - 1]
     }
 
-
-    fun quickSort(array: IntArray, begin: Int, end: Int) {
+//
+//    fun quickSort(array: IntArray, begin: Int, end: Int) {
+////        if (end <= begin) return
+////        val index = partition(array, begin, end)
+////        quickSort(array, begin, index - 1)
+////        quickSort(array, index + 1, end)
+//
 //        if (end <= begin) return
 //        val index = partition(array, begin, end)
 //        quickSort(array, begin, index - 1)
 //        quickSort(array, index + 1, end)
-
-        if (end <= begin) return
-        val index = partition(array, begin, end)
-        quickSort(array, begin, index - 1)
-        quickSort(array, index + 1, end)
-    }
-
-    private fun partition(array: IntArray, begin: Int, end: Int): Int {
+//    }
+//
+//    private fun partition(array: IntArray, begin: Int, end: Int): Int {
+////        val temp = array[begin]
+////        var low = begin
+////        var high = end
+////        while (low < high) {
+////            while (low < high && array[high] >= temp) {
+////                high--
+////            }
+////            array[low] = array[high]
+////            while (low < high && array[low] <= temp) {
+////                low++
+////            }
+////            array[high] = array[low]
+////        }
+////        array[low] = temp
+////        return low
 //        val temp = array[begin]
 //        var low = begin
 //        var high = end
 //        while (low < high) {
-//            while (low < high && array[high] >= temp) {
-//                high--
-//            }
+//            while (low < high && array[high] >= temp) high--
 //            array[low] = array[high]
-//            while (low < high && array[low] <= temp) {
-//                low++
-//            }
+//            while (low < high && array[low] <= temp) low++
 //            array[high] = array[low]
 //        }
 //        array[low] = temp
 //        return low
-        val temp = array[begin]
-        var low = begin
-        var high = end
-        while (low < high) {
-            while (low < high && array[high] >= temp) high--
-            array[low] = array[high]
-            while (low < high && array[low] <= temp) low++
-            array[high] = array[low]
+//    }
+
+    fun sortArray(nums: IntArray): IntArray {
+        quickSort(nums, 0, nums.lastIndex)
+        return nums
+    }
+
+    fun quickSort(arr: IntArray, start: Int, end: Int) {
+        if (start < end) {
+            val index = part(arr, start, end)
+            quickSort(arr, start, index - 1)
+            quickSort(arr, index + 1, end)
         }
-        array[low] = temp
-        return low
+    }
+
+    fun part(arr: IntArray, start: Int, end: Int): Int {
+        val temp = arr[start]
+        var l = start
+        var h = end
+        while (l < h) {
+            while (l < h && arr[h] >= temp) h--
+            arr[l] = arr[h]
+            while (l < h && arr[l] <= temp) l++
+            arr[h] = arr[l]
+        }
+        arr[l] = temp
+        return l
+//        var p = start + 1
+//
+//        for (i in p..end) {
+//            if (arr[i] < arr[start]) {
+//                arr[i] = arr[p].also { arr[p] = arr[i] }
+//                p++
+//            }
+//
+//        }
+//        arr[start] = arr[p - 1].also { arr[p - 1] = arr[start] }
+//        return p - 1
     }
 
 

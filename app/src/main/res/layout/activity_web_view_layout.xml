@@ -6,12 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".activity.appbrand.ui.WebViewActivity">
 
-    <Button
-        android:id="@+id/button_exit"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/edit_url"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="退出"
+        android:hint="抖音地址"
+        android:inputType="text"
+        android:text="https://www.bilibili.com/video/BV1Ft4y1s7W3?p=2&amp;share_medium=iphone&amp;share_plat=ios&amp;share_session_id=BDB2C24A-C97A-432D-9634-EF926A16C3C1&amp;share_source=WEIXIN&amp;share_tag=s_i&amp;timestamp=1654768352&amp;unique_k=smJx5BC"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_parse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="解析"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_url" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

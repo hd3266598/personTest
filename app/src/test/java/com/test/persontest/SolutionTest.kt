@@ -7,6 +7,8 @@ import com.test.persontest.person.StarProxy
 import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
+import java.util.concurrent.locks.ReadWriteLock
+import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.math.max
 import kotlin.math.min
 
@@ -294,6 +296,36 @@ class SolutionTest : TestCase() {
         return array.toArray(Array(array.size) {
             return@Array ""
         })
+    }
+
+    fun findDiagonalOrder(mat: Array<IntArray>): IntArray {
+        val m = mat.size
+        val n = mat[0].size
+        val res = IntArray(m * n)
+        var pos = 0
+        for (i in 0 until m + n) {
+            //偶数
+            if (i and 1 == 0) {
+                var x = if (i < m) i else m - 1
+                var y = if (i < m) 0 else i - m + 1
+                while (y < n && x >= 0) {
+                    res[pos] = mat[x][y]
+                    pos++
+                    x--
+                    y++
+                }
+            } else {
+                var x = if (i < n) 0 else i - n + 1
+                var y = if (i < n) i else n - 1
+                while (x < m && y >= 0) {
+                    res[pos] = mat[x][y]
+                    pos++
+                    x++
+                    y--
+                }
+            }
+        }
+        return res
     }
 
 
