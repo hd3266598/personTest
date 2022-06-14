@@ -11,8 +11,10 @@ import android.media.MediaMuxer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.FileUtils
+import android.provider.MediaStore
 import android.util.Log
-import android.webkit.*
+import android.webkit.JavascriptInterface
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,6 +29,8 @@ import com.test.persontest.R
 import com.test.persontest.model.LocalVideo
 import com.test.persontest.model.video.Data
 import com.test.persontest.model.video.VideoBean
+import com.test.persontest.utils.FileHelper
+import com.test.persontest.utils.LocalFileUtils
 import com.test.persontest.utils.MyExtractor
 import com.test.persontest.widget.LoadingDialog
 import kotlinx.android.synthetic.main.activity_web_view_layout.*
@@ -39,11 +43,15 @@ import okio.source
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
-import javax.net.ssl.*
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 
 class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Callback {
@@ -348,18 +356,53 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
                         // 将ClipData内容放到系统剪贴板里。
                         cm.setPrimaryClip(mClipData)
                         Toast.makeText(this@WebViewActivity, "已复制", Toast.LENGTH_SHORT).show()
+
+//                        val file = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+//                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+//                        intent.addCategory(Intent.CATEGORY_DEFAULT)
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                        val uriForFile = FileProvider.getUriForFile(applicationContext, BuildConfig.APPLICATION_ID + ".provider", file!!)
+//                        intent.setDataAndType(uriForFile, "file/*.txt")
+//                        startActivity(intent)
+//
+//
+//
+//                        try {
+//                            MediaStore.Images.Media.insertImage(
+//                                contentResolver,
+//                                _path, item.title, null
+//                            )
+//                        } catch (e: FileNotFoundException) {
+//                            e.printStackTrace()
+//                        }
+//                        // 最后通知图库更新
+//                        // 最后通知图库更新
+//                        val localUri = Uri.parse(_path)
+//
+//                        val localIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri)
+//
+//                        sendBroadcast(localIntent)
+
+//                        FileHelper.saveVideoToSystemAlbum(_path, this@WebViewActivity)
+                        LocalFileUtils.videoSaveToNotifyGalleryToRefreshWhenVersionGreaterQ(this@WebViewActivity, File(_path))
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }
 
+
                 holder.getView<Button>(R.id.btn_delete).setOnClickListener {
                     File(_path).delete()
+                    remove(item)
                     Toast.makeText(this@WebViewActivity, "已删除", Toast.LENGTH_SHORT).show()
                 }
             }
             holder.getView<TextView>(R.id.tv_title).text = item.title
 
+
         }
     }
+
+
 }
