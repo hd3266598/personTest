@@ -1,5 +1,6 @@
 package com.test.persontest.activity
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.os.Looper
 import android.os.MessageQueue
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.test.persontest.R
 import com.test.persontest.activity.appbrand.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -51,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         search(::find)
+
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA), WebViewActivity.PERMISSION_REQUEST_CODE)
     }
 
 

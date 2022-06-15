@@ -1,9 +1,6 @@
 package com.test.persontest.activity.appbrand.ui
 
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.media.MediaCodec
 import android.media.MediaFormat
@@ -11,10 +8,8 @@ import android.media.MediaMuxer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.os.FileUtils
 import android.provider.MediaStore
 import android.util.Log
-import android.webkit.JavascriptInterface
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,7 +24,6 @@ import com.test.persontest.R
 import com.test.persontest.model.LocalVideo
 import com.test.persontest.model.video.Data
 import com.test.persontest.model.video.VideoBean
-import com.test.persontest.utils.FileHelper
 import com.test.persontest.utils.LocalFileUtils
 import com.test.persontest.utils.MyExtractor
 import com.test.persontest.widget.LoadingDialog
@@ -43,7 +37,6 @@ import okio.source
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.security.SecureRandom
@@ -58,8 +51,6 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
     private val TAG = "Video"
     private val gson = Gson()
     private var baseUrl: String = ""
-
-    private val headers = Headers.Builder().add("Accept", "*/*").add("Accept-Language", "en-US,en;q=0.5").add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36")
 
     private val okHttpClient = getUnsafeOkHttpClient()
 
@@ -76,21 +67,31 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
-        val externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-        externalFilesDir?.listFiles()?.onEach {
-            data.add(LocalVideo(it.name.removeSuffix(".mp4"), it.absolutePath))
-            adapter.notifyDataSetChanged()
-        }
 
         btn_parse.setOnClickListener {
             baseUrl = edit_url.text.toString()
             if (baseUrl.isNotEmpty()) {
                 showLoadingDialog()
 
-                val request: Request = Request.Builder().url(baseUrl).get().headers(headers.build()).build()
+                val request: Request = Request.Builder().url(baseUrl).get().build()
                 okHttpClient?.newCall(request)?.enqueue(this)
             }
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshData()
+    }
+
+    private fun refreshData() {
+        data.clear()
+        val externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+        externalFilesDir?.listFiles()?.onEach {
+            data.add(LocalVideo(it.name.removeSuffix(".mp4"), it.absolutePath))
+        }
+        adapter.notifyDataSetChanged()
     }
 
 
@@ -98,7 +99,6 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         if (xml.isNullOrEmpty()) return
         launch(Dispatchers.IO) {
             try {
-                println(xml)
                 Log.i("parseHtml", "parseHtml: $xml")
                 val doc = Jsoup.parse(xml)
                 Log.i("Jsoup", "Jsoup: $doc")
@@ -137,6 +137,7 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
 
 
     private suspend fun downloadSingle(name: String, videoUrl: String, audioUrl: String) = withContext(Dispatchers.IO) {
+        val headers = Headers.Builder()
         headers.add("Referer", baseUrl)
         headers.add("Range", "'bytes=0-")
         Log.i(TAG, "视频下载开始：$name")
@@ -148,21 +149,29 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
 
         val video: Request = Request.Builder().url(videoUrl).get().headers(headers.build()).build()
         val videoPath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + File.separator + "${name}_video.mp4"
-        okHttpClient?.newCall(video)?.execute()?.body?.byteStream()?.source()?.use { source ->
-            try {
-                val file = File(videoPath)
-                if (file.exists()) {
-                    file.delete()
-                }
-                if (file.createNewFile()) {
-                    file.sink().use {
-                        it.buffer().writeAll(source)
+        try {
+            okHttpClient?.newCall(video)?.execute()?.body?.byteStream()?.source()?.use { source ->
+                try {
+                    val file = File(videoPath)
+                    if (file.exists()) {
+                        file.delete()
                     }
+                    if (file.createNewFile()) {
+                        file.sink().use {
+                            it.buffer().writeAll(source)
+                        }
+                    }
+                } catch (e: Exception) {
+                    throw e
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            withContext(Dispatchers.Main) {
+                hideLoadingDialog()
             }
         }
+
 
         //下载并保存视频
         okHttpClient?.newCall(Request.Builder().url(audioUrl).head().headers(headers.build()).build())?.execute()?.let {
@@ -172,21 +181,29 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
 
         val audio: Request = Request.Builder().url(audioUrl).get().headers(headers.build()).build()
         val audioPath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + File.separator + "${name}_audio.mp3"
-        okHttpClient?.newCall(audio)?.execute()?.body?.byteStream()?.source()?.use { source ->
-            try {
-                val file = File(audioPath)
-                if (file.exists()) {
-                    file.delete()
-                }
-                if (file.createNewFile()) {
-                    file.sink().use {
-                        it.buffer().writeAll(source)
+        try {
+            okHttpClient?.newCall(audio)?.execute()?.body?.byteStream()?.source()?.use { source ->
+                try {
+                    val file = File(audioPath)
+                    if (file.exists()) {
+                        file.delete()
                     }
+                    if (file.createNewFile()) {
+                        file.sink().use {
+                            it.buffer().writeAll(source)
+                        }
+                    }
+                } catch (e: Exception) {
+                    throw  e
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            withContext(Dispatchers.Main) {
+                hideLoadingDialog()
             }
         }
+
 
         Log.i(TAG, "downloadSingle: 视频下载结束")
 
@@ -202,7 +219,8 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         }
 
         Log.i(TAG, "视频合成结束：$name")
-
+        //通知相册
+        LocalFileUtils.videoSaveToNotifyGalleryToRefreshWhenVersionGreaterQ(this@WebViewActivity, file)
         //删除源文件
         File(audioPath).delete()
         File(videoPath).delete()
@@ -210,19 +228,13 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         withContext(Dispatchers.Main) {
             Toast.makeText(this@WebViewActivity, "下载成功", Toast.LENGTH_SHORT).show()
             hideLoadingDialog()
-            adapter.addData(LocalVideo(name, path))
+            refreshData()
         }
     }
 
-    class InJavaScriptLocalObj {
-        @JavascriptInterface
-        fun showSource(html: String) {
-            //html 就是网页的数据 </span>
-            println("====>html=$html")
-        }
-    }
 
     override fun onFailure(call: Call, e: IOException) {
+        hideLoadingDialog()
         Log.e("onFailure", "onFailure: ${e.message}")
     }
 
@@ -258,7 +270,9 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
             val builder = OkHttpClient.Builder()
             builder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
             builder.hostnameVerifier { p0, p1 -> true }
-            builder.addInterceptor(HttpLoggingInterceptor())
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            builder.addInterceptor(interceptor)
             builder.build()
         } catch (e: Exception) {
             throw RuntimeException(e)
@@ -349,43 +363,12 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
                 }
                 holder.getView<Button>(R.id.btn_clip).setOnClickListener {
                     try {
-                        //获取剪贴板管理器
-                        val cm: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        // 创建普通字符型ClipData
-                        val mClipData = ClipData.newPlainText("Label", _path)
-                        // 将ClipData内容放到系统剪贴板里。
-                        cm.setPrimaryClip(mClipData)
-                        Toast.makeText(this@WebViewActivity, "已复制", Toast.LENGTH_SHORT).show()
-
-//                        val file = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-//                        val intent = Intent(Intent.ACTION_GET_CONTENT)
-//                        intent.addCategory(Intent.CATEGORY_DEFAULT)
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                        val uriForFile = FileProvider.getUriForFile(applicationContext, BuildConfig.APPLICATION_ID + ".provider", file!!)
-//                        intent.setDataAndType(uriForFile, "file/*.txt")
-//                        startActivity(intent)
-//
-//
-//
-//                        try {
-//                            MediaStore.Images.Media.insertImage(
-//                                contentResolver,
-//                                _path, item.title, null
-//                            )
-//                        } catch (e: FileNotFoundException) {
-//                            e.printStackTrace()
-//                        }
-//                        // 最后通知图库更新
-//                        // 最后通知图库更新
-//                        val localUri = Uri.parse(_path)
-//
-//                        val localIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri)
-//
-//                        sendBroadcast(localIntent)
-
-//                        FileHelper.saveVideoToSystemAlbum(_path, this@WebViewActivity)
-                        LocalFileUtils.videoSaveToNotifyGalleryToRefreshWhenVersionGreaterQ(this@WebViewActivity, File(_path))
-
+                        val pickIntent = Intent(
+                            Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        )
+                        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "video/*")
+                        startActivity(pickIntent)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -394,7 +377,7 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
 
                 holder.getView<Button>(R.id.btn_delete).setOnClickListener {
                     File(_path).delete()
-                    remove(item)
+                    refreshData()
                     Toast.makeText(this@WebViewActivity, "已删除", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -404,5 +387,7 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         }
     }
 
-
+    companion object {
+        const val PERMISSION_REQUEST_CODE = 1001
+    }
 }
