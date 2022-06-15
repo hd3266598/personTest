@@ -10,9 +10,8 @@
         android:id="@+id/edit_url"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="抖音地址"
+        android:hint="地址"
         android:inputType="text"
-        android:text="https://www.bilibili.com/video/BV1Ft4y1s7W3?p=2&amp;share_medium=iphone&amp;share_plat=ios&amp;share_session_id=BDB2C24A-C97A-432D-9634-EF926A16C3C1&amp;share_source=WEIXIN&amp;share_tag=s_i&amp;timestamp=1654768352&amp;unique_k=smJx5BC"
         app:layout_constraintEnd_toStartOf="@+id/btn_parse"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

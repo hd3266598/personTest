@@ -1,6 +1,9 @@
 package com.test.persontest.activity.appbrand.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.media.MediaCodec
 import android.media.MediaFormat
@@ -14,6 +17,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -41,13 +45,14 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.util.regex.Pattern
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 
-class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Callback {
+class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(){
     private val TAG = "Video"
     private val gson = Gson()
     private var baseUrl: String = ""
@@ -74,16 +79,42 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
                 showLoadingDialog()
                 dialog?.setTitle("loading")
 
-                val request: Request = Request.Builder().url(baseUrl).get().build()
-                okHttpClient?.newCall(request)?.enqueue(this)
+                okHttpClient?.newCall(Request.Builder().url(baseUrl).get().build())?.enqueue(object :Callback{
+                    override fun onFailure(call: Call, e: IOException) {
+                        hideLoadingDialog()
+                        Log.i(TAG, "onFailure: 连接错误")
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        if (response.isSuccessful) {
+                            baseUrl = response.request.url.toString()
+                            val request: Request = Request.Builder().url(baseUrl).get().build()
+                            okHttpClient.newCall(request).enqueue(object :Callback{
+                                override fun onFailure(call: Call, e: IOException) {
+                                    hideLoadingDialog()
+                                    Log.e("onFailure", "onFailure: ${e.message}")
+                                }
+
+                                override fun onResponse(call: Call, response: Response) {
+                                    if (response.isSuccessful) {
+                                        parseHtml(response.body?.string())
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
             }
         }
-
     }
 
     override fun onResume() {
         super.onResume()
         refreshData()
+
+        edit_url.post {
+            edit_url.setText(getClipboardContent())
+        }
     }
 
     private fun refreshData() {
@@ -244,17 +275,6 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
     }
 
 
-    override fun onFailure(call: Call, e: IOException) {
-        hideLoadingDialog()
-        Log.e("onFailure", "onFailure: ${e.message}")
-    }
-
-    override fun onResponse(call: Call, response: Response) {
-        if (response.isSuccessful) {
-            parseHtml(response.body?.string())
-        }
-    }
-
     private fun getUnsafeOkHttpClient(): OkHttpClient? {
         return try {
             // Create a trust manager that does not validate certificate chains
@@ -293,51 +313,55 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
     @SuppressLint("WrongConstant")
     @Throws(java.lang.Exception::class)
     fun mixerVoice2Video(videoPath: String?, audioPath: String?, savePath: String?) {
-        //创建音频的 MediaExtractor
-        val audioExtractor = MyExtractor(audioPath)
-        //创建视频的 MediaExtractor
-        val videoExtractor = MyExtractor(videoPath)
-        //拿到音频的 mediaFormat
-        val audioFormat: MediaFormat = audioExtractor.audioFormat
-        //拿到音频的 mediaFormat
-        val videoFormat: MediaFormat = videoExtractor.videoFormat
-        val mediaMuxer = MediaMuxer(savePath!!, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
-        //添加音频
-        val audioId = mediaMuxer.addTrack(audioFormat)
-        //添加视频
-        val videoId = mediaMuxer.addTrack(videoFormat)
-        //开始混合，等待写入
-        mediaMuxer.start()
-        val buffer: ByteBuffer = ByteBuffer.allocate(500 * 1024)
-        val info = MediaCodec.BufferInfo()
+        try {
+            //创建音频的 MediaExtractor
+            val audioExtractor = MyExtractor(audioPath)
+            //创建视频的 MediaExtractor
+            val videoExtractor = MyExtractor(videoPath)
+            //拿到音频的 mediaFormat
+            val audioFormat: MediaFormat = audioExtractor.audioFormat
+            //拿到音频的 mediaFormat
+            val videoFormat: MediaFormat = videoExtractor.videoFormat
+            val mediaMuxer = MediaMuxer(savePath!!, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
+            //添加音频
+            val audioId = mediaMuxer.addTrack(audioFormat)
+            //添加视频
+            val videoId = mediaMuxer.addTrack(videoFormat)
+            //开始混合，等待写入
+            mediaMuxer.start()
+            val buffer: ByteBuffer = ByteBuffer.allocate(500 * 1024)
+            val info = MediaCodec.BufferInfo()
 
-        //混合视频
-        var videoSize: Int
-        //读取视频帧的数据，直到结束
-        while (videoExtractor.readBuffer(buffer, true).also { videoSize = it } > 0) {
-            //从0帧开始读取
-            info.offset = 0
-            //本次读取的长度
-            info.size = videoSize
-            info.presentationTimeUs = videoExtractor.curSampleTime
-            info.flags = videoExtractor.curSampleFlags
-            mediaMuxer.writeSampleData(videoId, buffer, info)
+            //混合视频
+            var videoSize: Int
+            //读取视频帧的数据，直到结束
+            while (videoExtractor.readBuffer(buffer, true).also { videoSize = it } > 0) {
+                //从0帧开始读取
+                info.offset = 0
+                //本次读取的长度
+                info.size = videoSize
+                info.presentationTimeUs = videoExtractor.curSampleTime
+                info.flags = videoExtractor.curSampleFlags
+                mediaMuxer.writeSampleData(videoId, buffer, info)
+            }
+            //写完视频，再把音频混合进去
+            var audioSize: Int
+            //读取音频帧的数据，直到结束
+            while (audioExtractor.readBuffer(buffer, false).also { audioSize = it } > 0) {
+                info.offset = 0
+                info.size = audioSize
+                info.presentationTimeUs = audioExtractor.curSampleTime
+                info.flags = audioExtractor.curSampleFlags
+                mediaMuxer.writeSampleData(audioId, buffer, info)
+            }
+            //释放资源
+            audioExtractor.release()
+            videoExtractor.release()
+            mediaMuxer.stop()
+            mediaMuxer.release()
+        }catch (e:Exception){
+            e.printStackTrace()
         }
-        //写完视频，再把音频混合进去
-        var audioSize: Int
-        //读取音频帧的数据，直到结束
-        while (audioExtractor.readBuffer(buffer, false).also { audioSize = it } > 0) {
-            info.offset = 0
-            info.size = audioSize
-            info.presentationTimeUs = audioExtractor.curSampleTime
-            info.flags = audioExtractor.curSampleFlags
-            mediaMuxer.writeSampleData(audioId, buffer, info)
-        }
-        //释放资源
-        audioExtractor.release()
-        videoExtractor.release()
-        mediaMuxer.stop()
-        mediaMuxer.release()
     }
 
 
@@ -400,5 +424,27 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 1001
+    }
+
+    /**
+     * 获取剪切板上的内容
+     */
+    @Nullable
+    fun getClipboardContent(): String? {
+        val cm: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val data: ClipData? = cm.primaryClip
+        if (data != null && data.itemCount > 0) {
+            val item = data.getItemAt(0)
+            if (item != null) {
+                val sequence = item.coerceToText(this)
+                if (sequence != null) {
+                    val regex = "https?://(?:[-\\w.]|%[\\da-fA-F]{2})+[^\\u4e00-\\u9fa5]+[\\w-_/?&=#%:]{0}"
+                    val matcher = Pattern.compile(regex).matcher(sequence)
+                    if (matcher.find()) return matcher.group()
+                    return sequence.toString()
+                }
+            }
+        }
+        return null
     }
 }
