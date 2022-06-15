@@ -35,32 +35,32 @@ object LocalFileUtils {
             values.put(MediaStore.Video.Media.DATA, destFile.absolutePath)
             context.contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
         }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            values.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
-//            values.put(MediaStore.Video.Media.IS_PENDING, 1)
-//        }
-//        val pfd: ParcelFileDescriptor?
-//        try {
-//            uriSavedVideo?.let {
-//                pfd = context.contentResolver.openFileDescriptor(uriSavedVideo, "w")
-//                pfd?.let {
-//                    val out = FileOutputStream(pfd.fileDescriptor)
-//                    destFile.source().buffer().use { _source ->
-//                        out.sink().buffer().use {
-//                            it.writeAll(_source)
-//                        }
-//                    }
-//                }
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                    values.clear()
-//                    values.put(MediaStore.Video.Media.IS_PENDING, 0)
-//                    context.contentResolver.update(uriSavedVideo, values, null, null)
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
+            values.put(MediaStore.Video.Media.IS_PENDING, 1)
 
-        Log.i("LocalFileUtils", "videoSaveToNotifyGalleryToRefreshWhenVersionGreaterQ: " + "编译结束")
+            val pfd: ParcelFileDescriptor?
+            try {
+                uriSavedVideo?.let {
+                    pfd = context.contentResolver.openFileDescriptor(uriSavedVideo, "w")
+                    pfd?.let {
+                        val out = FileOutputStream(pfd.fileDescriptor)
+                        destFile.source().buffer().use { _source ->
+                            out.sink().buffer().use {
+                                it.writeAll(_source)
+                            }
+                        }
+                    }
+                    values.clear()
+                    values.put(MediaStore.Video.Media.IS_PENDING, 0)
+                    context.contentResolver.update(uriSavedVideo, values, null, null)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+
+        Log.i("LocalFileUtils", "videoSaveToNotifyGalleryToRefreshWhenVersionGreaterQ: " + "通知相册更新")
     }
 }

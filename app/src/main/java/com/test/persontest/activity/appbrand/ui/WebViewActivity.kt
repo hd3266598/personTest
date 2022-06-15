@@ -72,6 +72,7 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
             baseUrl = edit_url.text.toString()
             if (baseUrl.isNotEmpty()) {
                 showLoadingDialog()
+                dialog?.setTitle("loading")
 
                 val request: Request = Request.Builder().url(baseUrl).get().build()
                 okHttpClient?.newCall(request)?.enqueue(this)
@@ -145,6 +146,9 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         okHttpClient?.newCall(Request.Builder().url(videoUrl).head().headers(headers.build()).build())?.execute()?.let {
             val size = (it.headers["content-length"]?.toDouble() ?: 0.0) / 1024.0 / 1024.0
             Log.i(TAG, "视频大小：${"%.2f".format(size)}MB")
+            withContext(Dispatchers.Main) {
+                dialog?.setTitle("视频：${"%.2f".format(size)}MB")
+            }
         }
 
         val video: Request = Request.Builder().url(videoUrl).get().headers(headers.build()).build()
@@ -177,6 +181,9 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         okHttpClient?.newCall(Request.Builder().url(audioUrl).head().headers(headers.build()).build())?.execute()?.let {
             val size = (it.headers["content-length"]?.toDouble() ?: 0.0) / 1024.0 / 1024.0
             Log.i(TAG, "音频大小：${"%.2f".format(size)}MB")
+            withContext(Dispatchers.Main) {
+                dialog?.setTitle("音频：${"%.2f".format(size)}MB")
+            }
         }
 
         val audio: Request = Request.Builder().url(audioUrl).get().headers(headers.build()).build()
@@ -208,6 +215,10 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(), Call
         Log.i(TAG, "downloadSingle: 视频下载结束")
 
         Log.i(TAG, "视频合成开始：$name")
+
+        withContext(Dispatchers.Main) {
+            dialog?.setTitle("合成")
+        }
 
         val path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + File.separator + "${name}.mp4"
         val file = File(path)
