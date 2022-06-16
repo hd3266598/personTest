@@ -52,7 +52,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 
-class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(){
+class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private val TAG = "Video"
     private val gson = Gson()
     private var baseUrl: String = ""
@@ -74,12 +74,12 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(){
 
 
         btn_parse.setOnClickListener {
-            baseUrl = edit_url.text.toString()
+            baseUrl = edit_url.text.toString().trim()
             if (baseUrl.isNotEmpty()) {
                 showLoadingDialog()
                 dialog?.setTitle("loading")
 
-                okHttpClient?.newCall(Request.Builder().url(baseUrl).get().build())?.enqueue(object :Callback{
+                okHttpClient?.newCall(Request.Builder().url(baseUrl).get().build())?.enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
                         hideLoadingDialog()
                         Log.i(TAG, "onFailure: 连接错误")
@@ -89,7 +89,7 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(){
                         if (response.isSuccessful) {
                             baseUrl = response.request.url.toString()
                             val request: Request = Request.Builder().url(baseUrl).get().build()
-                            okHttpClient.newCall(request).enqueue(object :Callback{
+                            okHttpClient.newCall(request).enqueue(object : Callback {
                                 override fun onFailure(call: Call, e: IOException) {
                                     hideLoadingDialog()
                                     Log.e("onFailure", "onFailure: ${e.message}")
@@ -359,7 +359,7 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope(){
             videoExtractor.release()
             mediaMuxer.stop()
             mediaMuxer.release()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
