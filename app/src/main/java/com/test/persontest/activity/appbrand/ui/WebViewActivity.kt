@@ -45,6 +45,8 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
@@ -66,6 +68,9 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private var dialog: LoadingDialog? = null
 
     private var path: String? = null
+
+    private val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.CHINA)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -247,7 +252,7 @@ class WebViewActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + File.separator + "${name}.mp4"
         var file = File(path)
         if (file.exists()) {
-            path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + File.separator + "${name}-${System.currentTimeMillis()}.mp4"
+            path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + File.separator + "${name}-${simpleDateFormat.format(Date())}.mp4"
             file = File(path)
         }
         if (file.createNewFile()) {
