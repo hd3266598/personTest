@@ -7,6 +7,8 @@ import android.os.Build
 import android.provider.MediaStore
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
 import okio.source
@@ -16,7 +18,7 @@ import java.io.FileOutputStream
 import java.lang.Exception
 
 object LocalFileUtils {
-    fun videoSaveToNotifyGalleryToRefreshWhenVersionGreaterQ(context: Context, destFile: File) {
+    suspend fun videoSaveToNotifyGalleryToRefreshWhenVersionGreaterQ(context: Context, destFile: File) = withContext(Dispatchers.IO) {
         val values = ContentValues()
         val uriSavedVideo: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/Folder")

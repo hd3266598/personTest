@@ -523,9 +523,40 @@ class SolutionTest : TestCase() {
         return true
     }
 
+    fun duplicateZeros(arr: IntArray) {
+        var top = 0
+        var i = -1
+        val n = arr.size
+        while (top < n) {
+            i++
+            if (arr[i] == 0) top++
+            top++
+        }
+
+        if (top > n) {
+            top -= 2
+            arr[top] = 0
+            top--
+            i--
+        } else {
+            top--
+        }
+
+        while (top >= 0) {
+            arr[top] = arr[i]
+            top--
+            if (arr[i] == 0) {
+                arr[top] = 0
+                top--
+            }
+            i--
+        }
+    }
+
 
     @Test
     fun testMain() {
-        minDeletionSize(arrayOf("zyx", "wvu", "tsr"))
+//        minDeletionSize(arrayOf("zyx", "wvu", "tsr"))
+        duplicateZeros(intArrayOf(1, 0, 2, 3, 0, 0, 5, 0))
     }
 }
