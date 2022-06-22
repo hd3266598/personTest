@@ -523,6 +523,10 @@ class SolutionTest : TestCase() {
         return true
     }
 
+    fun defangIPaddr(address: String): String {
+        address.replace(".", "[.]");
+    }
+
     fun duplicateZeros(arr: IntArray) {
         var top = 0
         var i = -1
@@ -551,6 +555,23 @@ class SolutionTest : TestCase() {
             }
             i--
         }
+    }
+
+    fun findBottomLeftValue(root: TreeNode?): Int {
+        var res = 0
+        val queue = ArrayDeque<TreeNode>()
+        queue.offer(root)
+        while (queue.isNotEmpty()) {
+            val node = queue.poll()
+            if (node?.right != null) {
+                queue.offer(node.right)
+            }
+            if (node?.left != null) {
+                queue.offer(node.left)
+            }
+            res = node?.`val` ?: 0
+        }
+        return res
     }
 
 

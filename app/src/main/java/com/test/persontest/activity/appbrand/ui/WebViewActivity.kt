@@ -34,7 +34,6 @@ import com.test.persontest.widget.LoadingDialog
 import kotlinx.android.synthetic.main.activity_web_view_layout.*
 import kotlinx.coroutines.*
 import okhttp3.*
-import okhttp3.logging.HttpLoggingInterceptor
 import okio.buffer
 import okio.sink
 import okio.source
