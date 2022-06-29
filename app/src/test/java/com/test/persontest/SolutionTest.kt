@@ -523,10 +523,6 @@ class SolutionTest : TestCase() {
         return true
     }
 
-    fun defangIPaddr(address: String): String {
-        address.replace(".", "[.]");
-    }
-
     fun duplicateZeros(arr: IntArray) {
         var top = 0
         var i = -1
