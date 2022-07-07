@@ -8,6 +8,8 @@ import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
 import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 import kotlin.math.max
 import kotlin.math.min
 
@@ -570,10 +572,29 @@ class SolutionTest : TestCase() {
         return res
     }
 
+    fun replaceWords(dictionary: List<String>, sentence: String): String {
+        val mDictionary = dictionary.toHashSet()
+        val split = sentence.split(" ").toMutableList()
+        for (i in 0..split.lastIndex) {
+            val word = split[i]
+            for (j in 0..word.lastIndex) {
+                val substring = word.substring(0, 1 + j)
+                if (mDictionary.contains(substring)) {
+                    split[i] = substring
+                    break
+                }
+            }
+        }
+        return split.joinToString(" ")
+    }
+
 
     @Test
     fun testMain() {
 //        minDeletionSize(arrayOf("zyx", "wvu", "tsr"))
-        duplicateZeros(intArrayOf(1, 0, 2, 3, 0, 0, 5, 0))
+        replaceWords(
+            listOf("a", "aa", "aaa", "aaaa"),
+            "a aa a aaaa aaa aaa aaa aaaaaa bbb baba ababa"
+        )
     }
 }
