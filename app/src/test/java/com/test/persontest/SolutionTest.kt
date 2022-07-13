@@ -1,5 +1,6 @@
 package com.test.persontest
 
+import android.graphics.Matrix
 import android.util.SparseArray
 import androidx.core.util.containsValue
 import com.test.persontest.person.LiuDeHua
@@ -10,6 +11,7 @@ import org.junit.Test
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -588,13 +590,33 @@ class SolutionTest : TestCase() {
         return split.joinToString(" ")
     }
 
+    fun asteroidCollision(asteroids: IntArray): IntArray {
+        val stack = Stack<Int>()
+        for (it in asteroids) {
+            if (it > 0) {
+                stack.push(it)
+            } else {
+                var alive = true
+                while (alive && stack.isNotEmpty() && stack.peek() > 0) {
+                    alive = stack.peek() < Math.abs(it)
+                    if (stack.peek() <= abs(it)) stack.pop()
+                }
+                if (alive) stack.push(it)
+            }
+        }
+        return stack.toIntArray()
+    }
+
 
     @Test
     fun testMain() {
 //        minDeletionSize(arrayOf("zyx", "wvu", "tsr"))
-        replaceWords(
-            listOf("a", "aa", "aaa", "aaaa"),
-            "a aa a aaaa aaa aaa aaa aaaaaa bbb baba ababa"
-        )
+
+    }
+
+
+    companion object {
+        @JvmStatic
+        var a: String? = "a"
     }
 }
