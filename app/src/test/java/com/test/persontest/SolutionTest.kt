@@ -607,6 +607,11 @@ class SolutionTest : TestCase() {
         return stack.toIntArray()
     }
 
+    fun intersectionSizeTwo(intervals: Array<IntArray>): Int {
+
+        return  0
+    }
+
 
     @Test
     fun testMain() {
