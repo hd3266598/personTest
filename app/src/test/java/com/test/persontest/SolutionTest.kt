@@ -609,12 +609,20 @@ class SolutionTest : TestCase() {
 
     fun intersectionSizeTwo(intervals: Array<IntArray>): Int {
 
-        return  0
+        return 0
+    }
+
+    fun generateTheString(n: Int): String {
+        val string = String(CharArray(n - 1) { return@CharArray 's' })
+        return if (n and 1 == 0) {
+            string + 'b'
+        } else string + 's'
     }
 
 
     @Test
     fun testMain() {
+
 //        minDeletionSize(arrayOf("zyx", "wvu", "tsr"))
 
     }

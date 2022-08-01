@@ -36,13 +36,11 @@ class SolutionJava {
     private String a = "1";
 
     public void cc() {
-        modify(a);
 //        a++;
         System.out.println(a);
     }
 
-    public void modify(String a) {
-        a = "2";
+    public void modify(int a) {
         System.out.println(a);
     }
 }
