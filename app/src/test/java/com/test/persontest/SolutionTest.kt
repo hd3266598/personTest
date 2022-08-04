@@ -619,6 +619,19 @@ class SolutionTest : TestCase() {
         } else string + 's'
     }
 
+    fun minSubsequence(nums: IntArray): List<Int> {
+        val ans = arrayListOf<Int>()
+        val sum = nums.sum()
+        var cur = 0
+        nums.sort()
+        for (i in nums.lastIndex downTo 0) {
+            cur += nums[i]
+            ans.add(nums[i])
+            if (sum - cur < cur) break
+        }
+        return ans
+    }
+
 
     @Test
     fun testMain() {
