@@ -632,12 +632,38 @@ class SolutionTest : TestCase() {
         return ans
     }
 
+    fun addOneRow(root: TreeNode?, `val`: Int, depth: Int): TreeNode? {
+        if (depth == 1) {
+            val treeNode = TreeNode(`val`)
+            treeNode.left = root
+            return treeNode
+        }
+        val list = LinkedList<TreeNode>()
+        root?.let { list.offer(it) }
+        var cur = 0
+        while (list.isNotEmpty()) {
+            cur++
+            for (i in list.indices) {
+                val node = list.poll()
+                if (depth - 1 == cur) {
+                    val treeNode = TreeNode(`val`)
+                    treeNode.left = node?.left
+                    node?.left = treeNode
+                    val treeNode1 = TreeNode(`val`)
+                    treeNode1.right = node?.right
+                    node?.right = treeNode1
+                } else {
+                    if (node?.left != null) list.offer(node.left)
+                    if (node?.right != null) list.offer(node.right)
+                }
+            }
+        }
+        return root
+    }
+
 
     @Test
     fun testMain() {
-
-//        minDeletionSize(arrayOf("zyx", "wvu", "tsr"))
-
     }
 
 
