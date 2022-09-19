@@ -9,6 +9,7 @@ import com.test.persontest.person.star
 import junit.framework.TestCase
 import org.junit.Test
 import java.util.*
+import kotlin.Comparator
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 import kotlin.math.abs
@@ -89,9 +90,7 @@ class SolutionTest : TestCase() {
         val list = arrayListOf<Int>()
         val intArrayOf =
             arrayListOf(9, 8, 6, 2, 5, 4, 8, 3, 7, 2, 3, 4, 6, 1, 3, 8, 45, 93, 435, 26)
-        for (i in 0..100) {
-            list.addAll(intArrayOf)
-        }
+        list.addAll(intArrayOf)
         val toArray = list.toIntArray()
         val current = System.currentTimeMillis()
         solution?.quickSort(toArray, 0, toArray.lastIndex)
@@ -436,6 +435,27 @@ class SolutionTest : TestCase() {
         return result
     }
 
+    fun frequencySort(nums: IntArray): IntArray {
+        val map = hashMapOf<Int, Int>()
+        nums.forEach {
+            var value = map[it]
+            if (value == null) {
+                map[it] = 0
+            } else {
+                map[it] = ++value
+            }
+        }
+        val list = nums.toList()
+        val res = list.sortedWith { o1, o2 ->
+            val orDefault = map.getOrDefault(o1, 0)
+            val orDefault1 = map.getOrDefault(o2, 0)
+            if (orDefault == orDefault1) o2 - o1 else {
+                orDefault - orDefault1
+            }
+        }
+        return res.toIntArray()
+    }
+
     class Codec() {
         // Encodes a URL to a shortened URL.
         fun serialize(root: TreeNode?): String {
@@ -661,9 +681,34 @@ class SolutionTest : TestCase() {
         return root
     }
 
+    fun trimMean(arr: IntArray): Double {
+        arr.sort()
+        val n = arr.size
+        var sum = 0
+        for (i in n / 20 until n * 19 / 20) {
+            sum += arr[i]
+        }
+        return sum / (n * 0.9)
+    }
+
+
+    fun maxLengthBetweenEqualCharacters(s: String): Int {
+        val array = IntArray(26) { return@IntArray -1 }
+        var max = -1
+        s.forEachIndexed { index, c ->
+            if (array[c - 'a'] == -1) {
+                array[c - 'a'] = index
+            } else {
+                max = max.coerceAtLeast(index - array[c - 'a'] - 1)
+            }
+        }
+        return max
+    }
+
 
     @Test
     fun testMain() {
+        println(frequencySort(intArrayOf(2, 3, 1, 3, 2)).joinToString(","))
     }
 
 

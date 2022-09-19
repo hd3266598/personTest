@@ -18,6 +18,7 @@ import java.math.BigInteger
 import java.util.*
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.LinkedBlockingQueue
+import kotlin.math.E
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.system.measureTimeMillis
@@ -1070,17 +1071,28 @@ class Solution : CoroutineScope by MainScope() {
     }
 
     fun part(arr: IntArray, start: Int, end: Int): Int {
-        val temp = arr[start]
-        var l = start
-        var h = end
-        while (l < h) {
-            while (l < h && arr[h] >= temp) h--
-            arr[l] = arr[h]
-            while (l < h && arr[l] <= temp) l++
-            arr[h] = arr[l]
+//        val temp = arr[start]
+//        var r = start
+//        var l = end
+//        while (r < l) {
+//            while (r < l && arr[l] >= temp) l--
+//            arr[r] = arr[l]
+//            while (r < l && arr[r] <= temp) r++
+//            arr[l] = arr[r]
+//        }
+//        arr[r] = temp
+//        return l
+
+        var p = start+1
+        for (i in p..end){
+            if (arr[i]<arr[start]){
+                arr[i]=arr[p].also { arr[p] = arr[i] }
+                p++
+            }
         }
-        arr[l] = temp
-        return l
+        arr[start]=arr[p-1].also { arr[p-1] = arr[start] }
+        return  p-1
+
 //        var p = start + 1
 //
 //        for (i in p..end) {
